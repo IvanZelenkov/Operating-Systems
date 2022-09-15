@@ -10,5 +10,6 @@ Specific topics to be covered include:
 I will be working on interesting different problems related to operating systems. 
 <br>
 # <h3>Assignments<h3/>  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1. In this assignment, I will study the system-call interface provided by the Linux OS and learn how user programs communicate with the OS kernel via this interface!
+- Assignment 1 (I will study the system-call interface provided by the Linux OS and learn how user programs communicate with the OS kernel via this interface!)
+- Assignemnt 2 (I will study creating system calls using fork(), building a process tree using Graphviz package in Python, and how to pass messages between processes.)
 <br>
