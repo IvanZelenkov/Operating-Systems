@@ -36,7 +36,7 @@ public class ProcessTreeBuilder {
         } catch (ParseException e) {
             e.printStackTrace();
         } catch (FileNotFoundException e) {
-            System.out.print("Invalid file name, please try again.\n>>> ");
+            System.out.print("Invalid directory or file name, please try again.\n");
         }
         return isSuccess;
     }
@@ -79,7 +79,9 @@ public class ProcessTreeBuilder {
         System.out.println();
 
         while (!readFile(directory, filename)) {
+            System.out.print(">>> (directory): ");
             directory = reader.readLine();
+            System.out.print(">>> (file): ");
             filename = reader.readLine();
             System.out.println();
         }
