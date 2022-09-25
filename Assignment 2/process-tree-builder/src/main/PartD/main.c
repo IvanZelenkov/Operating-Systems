@@ -55,7 +55,10 @@ void delete_queues(int message_id1, int message_id2) {
 
 void writer(int message_id) {
 	buffer.message_type = 1;
-	fgets(buffer.message_text, sizeof(buffer.message_text), stdin);
+	if (fgets(buffer.message_text, sizeof(buffer.message_text), stdin) == NULL) {
+		perror("Error (fgets): can't accept input.");
+		exit(EXIT_FAILURE);
+	}
 
 	// Remove trailing newline character from fgets() input.
 	buffer.message_text[strcspn(buffer.message_text, "\n")] = '\0';
@@ -86,6 +89,8 @@ void child(int message_id1, int message_id2) {
 	printf("My chore is: %s\n", buffer.message_text);
 
 	printf("Sending my parent: ");
-	writer(message_id2);
+
+	// writer(message_id2);
+	delete_queues(message_id1, message_id2);
 	printf("\nI sent a reply to my parent.\n");
 }
