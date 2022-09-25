@@ -18,7 +18,7 @@ struct message_buffer {
 void delete_queues(int message_id1, int message_id2);
 void writer(int message_id);
 void reader(int message_id);
-void parent(int message_id);
+void parent(int message_id, int message_id2);
 void child(int message_id1, int message_id2);
 
 int main() {
@@ -38,7 +38,7 @@ int main() {
 			child(message_id1, message_id2);
 			exit(EXIT_SUCCESS);
 		default:
-			parent(message_id1);
+			parent(message_id1, message_id2);
 			exit(EXIT_SUCCESS);	
 	}
 	delete_queues(message_id1, message_id2);
@@ -76,21 +76,25 @@ void reader(int message_id) {
 	}
 }
 
-void parent(int message_id) {
+void parent(int message_id1, int message_id2) {
 	printf("I am a parent %d!\n", getpid());
 	printf("I need the following chore done: ");
-	writer(message_id);
-	printf("I sent the chore.\n");
+	writer(message_id1);
+	printf("I sent the chore.\n\n");
+	
+	wait(0);
+
+	printf("I am a parent %d!\n", getpid());
+	reader(message_id2);
+	printf("My child says: %s\n", buffer.message_text);
+	delete_queues(message_id1, message_id2);
 }
 
 void child(int message_id1, int message_id2) {
 	reader(message_id1);
-	printf("\nI am a child %d!\n", getpid());
+	printf("I am a child %d!\n", getpid());
 	printf("My chore is: %s\n", buffer.message_text);
-
 	printf("Sending my parent: ");
-
-	// writer(message_id2);
-	delete_queues(message_id1, message_id2);
-	printf("\nI sent a reply to my parent.\n");
+	writer(message_id2);
+	printf("I sent a reply to my parent.\n\n");
 }
