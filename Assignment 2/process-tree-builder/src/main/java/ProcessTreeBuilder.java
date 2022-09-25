@@ -30,7 +30,7 @@ public class ProcessTreeBuilder {
         Path path = Paths.get("");
         JSONParser parser = new JSONParser();
         try {
-            processes = (JSONArray) parser.parse(new FileReader(String.format(path.toAbsolutePath() + "/src/main/" + directory + "/%s.json", filename)));
+            processes = (JSONArray) parser.parse(new FileReader(String.format(path.toAbsolutePath() + "/src/main/resources/" + directory + "/%s.json", filename)));
             startTime = System.currentTimeMillis();
             isSuccess = true;
         } catch (ParseException e) {
