@@ -4,8 +4,8 @@
 
 ### Content
 - process-tree-builder
+    - Assignment2.pdf
     - src
-        - Assignment2.pdf
         - main
             - java 
               - GraphvizBuilder.java
