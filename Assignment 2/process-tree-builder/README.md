@@ -52,10 +52,15 @@ For PartA and PartC:
 
 For PartB:
 1. Install [Intellij IDEA](https://www.jetbrains.com/idea/download/#section=mac)
-2. Run ProcessTreeBuilder class in Intellij IDEA.
-3. Enter the name of the directory where the processes file is located.
-4. Enter a filename to read.
-5. In the Desktop folder on your PC, you will see a GraphvizOutput folder with generated images.
+2. Install [Graphviz](https://graphviz.org/download/) for the appropriate operating system.
+3. Open Intellij, go to File -> Project Structure, and change a project SDK to the SDK that is installed on the machine.
+4. Open the pom.xml file, and change <maven.compiler.source> to the version of SDK that is on your machine. For example,
+    `<maven.compiler.source>17</maven.compiler.source>` 
+5. Rebuild the project.
+6. Run ProcessTreeBuilder class in Intellij IDEA.
+7. Enter the name of the directory where the processes file is located.
+8. Enter a filename to read.
+9. In the Desktop folder on your PC, you will see a GraphvizOutput folder with generated images.
 
 For PartD:
 1. Enter a chore for the child process.
