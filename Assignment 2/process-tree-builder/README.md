@@ -7,34 +7,34 @@
     - Assignment2.pdf
     - src
         - main
-            - java 
-              - GraphvizBuilder.java
-              - NaryTree.java
-              - Node.java
-              - ProcessTreeBuilder.java
+            - java
+                - GraphvizBuilder.java
+                - NaryTree.java
+                - Node.java
+                - ProcessTreeBuilder.java
         - resources
             - PartA
-              - fork3calls.json
-              - fork6calls.json
-              - fork10calls.json
-              - main.c
-              - main.exe
+                - fork3calls.json
+                - fork6calls.json
+                - fork10calls.json
+                - main.c
+                - main.exe
             - PartC
-              - fork3calls.json
-              - fork6calls.json
-              - fork10calls.json
-              - main.c
-              - main.exe
+                - fork3calls.json
+                - fork6calls.json
+                - fork10calls.json
+                - main.c
+                - main.exe
             - PartD
-              - main.c
-              - main.exe
+                - main.c
+                - main.exe
 
 ### Description
-For this assignment, I will write an implementation of the N-are tree where parents can have multiple children 
-and each node represents a process with the following data: PID, PPID, and level. Every child node contains 
-PPID that should be equal to the parent PID. PartA generates a JSON file with the list of processes based on 
-the input number of fork() function calls, and PartC is a modification of PartA where the parent waits for 
-the child to terminate soon after the fork and then breaks from the loop and exits. PartD requires me to implement 
+For this assignment, I will write an implementation of the N-are tree where parents can have multiple children
+and each node represents a process with the following data: PID, PPID, and level. Every child node contains
+PPID that should be equal to the parent PID. PartA generates a JSON file with the list of processes based on
+the input number of fork() function calls, and PartC is a modification of PartA where the parent waits for
+the child to terminate soon after the fork and then breaks from the loop and exits. PartD requires me to implement
 inter-process communication (IPC) between a parent and child process.
 
 ### Instructions and Installations
@@ -55,9 +55,14 @@ For PartB:
 2. Install [Graphviz](https://graphviz.org/download/) for the appropriate operating system.
 3. Open Intellij, go to File -> Project Structure, and change a project SDK to the SDK that is installed on the machine.
 4. Open the pom.xml file, and change <maven.compiler.source> to the version of SDK that is on your machine. For example,
-    `<maven.compiler.source>17</maven.compiler.source>` 
+   
+        <properties>
+            <maven.compiler.source>17</maven.compiler.source>
+            <maven.compiler.target>17</maven.compiler.target>
+        </properties>
+   
 5. Rebuild the project.
-6. Run ProcessTreeBuilder class in Intellij IDEA.
+6. Run ProcessTreeBuilder.java class in Intellij IDEA.
 7. Enter the name of the directory where the processes file is located.
 8. Enter a filename to read.
 9. In the Desktop folder on your PC, you will see a GraphvizOutput folder with generated images.
