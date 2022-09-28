@@ -55,12 +55,12 @@ For PartB:
 2. Install [Graphviz](https://graphviz.org/download/) for the appropriate operating system.
 3. Open Intellij, go to File -> Project Structure, and change a project SDK to the SDK that is installed on the machine.
 4. Open the pom.xml file, and change <maven.compiler.source> to the version of SDK that is on your machine. For example,
-   
+
         <properties>
             <maven.compiler.source>17</maven.compiler.source>
             <maven.compiler.target>17</maven.compiler.target>
         </properties>
-   
+
 5. Rebuild the project.
 6. Run ProcessTreeBuilder.java class in Intellij IDEA.
 7. Enter the name of the directory where the processes file is located.
