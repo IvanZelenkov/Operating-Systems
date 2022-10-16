@@ -5,50 +5,23 @@ import java.io.FileReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Scanner;
 
 public class FrequentWordFinderSingleThreaded {
 
-    private static Map<String, Integer> words = new HashMap<>();
-
     public static void main(String[] args) {
+        Map<String, Integer> words = new HashMap<>();
         String filename = "SMS_Spam.txt";
-        fileReader(filename);
-        int max = getMaxOccurrence(words);
-
-        String maxOccurredWord = "";
-        for (Map.Entry<String, Integer> word : words.entrySet()) {
-            if (word.getValue() == max) {
-                maxOccurredWord = word.getKey();
-                System.out.println(filename + ": " + word.getKey() + word.getValue());
-            }
-        }
-
-
-        for (Map.Entry<String, Integer> map : words.entrySet()) {
-            if (map.getKey().contains(maxOccurredWord)) {
-                System.out.println(map.getKey());
-            }
-        }
+        fileReader(filename, words);
     }
 
-    private static void fileReader(String filename) {
+    private static void fileReader(String filename, Map<String, Integer> words) {
         Path path = Paths.get("");
-        int c = 1;
         try (Scanner scanner = new Scanner(new FileReader(String.format(path.toAbsolutePath() + "/src/main/resources/PartA/" + filename, filename)))) {
             while (scanner.hasNext()) {
-//                String word2 = scanner.next().toLowerCase();
-//                if (word2.contains("there")) {
-//                    word2 = word2.split("[^a-zA-Z]", 2)[0].replaceAll("[^a-zA-Z]", "");
-//                    if (word2.matches("[a-z]{5,}")) {
-//                        System.out.println("Exact: " + c++ + ": " + word2);
-//                    }
-//                }
-
-                String word = scanner.next().replaceAll("[^a-zA-Z]", "").toLowerCase();
-                if (word.length() < 5)
+                String word = scanner.next().toLowerCase().replaceAll("[^a-z]", "");
+                if (!word.matches("[a-z]{5,}"))
                     continue;
 
                 Integer counter = words.get(word);
@@ -60,18 +33,52 @@ public class FrequentWordFinderSingleThreaded {
 
                 words.put(word, counter);
             }
+//            while (scanner.hasNext()) {
+//                String[] tokens = scanner.next().split("[^a-z]");
+//                for (String token : tokens) {
+//                    String word = token.trim().toLowerCase().replaceAll("[^a-z]", "");
+//
+//                    if (word.length() < 5)
+//                        continue;
+//
+//                    Integer counter = words.get(word);
+//
+//                    if (counter != null)
+//                        counter++;
+//                    else
+//                        counter = 1;
+//
+//                    words.put(word, counter);
+//                }
+//            }
         } catch (FileNotFoundException e) {
             System.out.println("Error: file not found.");
         }
+        getMaxOccurrence(filename, words);
     }
 
-    private static int getMaxOccurrence(Map<String, Integer> words) {
+    private static void getMaxOccurrence(String filename, Map<String, Integer> words) {
         int max = 1;
+        int sum = 0;
+        String maxOccurredWord = "";
 
         for (Map.Entry<String, Integer> word : words.entrySet())
             if (word.getValue() > max)
                 max = word.getValue();
 
-        return max;
+        for (Map.Entry<String, Integer> word : words.entrySet())
+            if (word.getValue() == max)
+                maxOccurredWord = word.getKey();
+
+        for (Map.Entry<String, Integer> map : words.entrySet())
+            if (map.getKey().contains(maxOccurredWord) && maxOccurredWord.length() >= 4)
+                sum += map.getValue();
+
+        for (Map.Entry<String, Integer> word : words.entrySet()) {
+            if (word.getValue() == max) {
+                words.put(word.getKey(), sum);
+                System.out.println(filename + ": " + "'" + word.getKey() + "'" + " was found " + word.getValue() + " times.");
+            }
+        }
     }
 }

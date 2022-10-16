@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 
 public class FrequentWordFinderSingleThreaded {
 
-    private static Map<String, Integer> words = new HashMap<>();
+    private static final Map<String, Integer> words = new HashMap<>();
 
     public static void main(String[] args) {
         fileFinder();
@@ -29,9 +29,8 @@ public class FrequentWordFinderSingleThreaded {
                     .map(Path::toString)
                     .collect(Collectors.toSet());
 
-            for (String filename : set)
-                fileReader(filename);
-
+//            for (String filename : set)
+                fileReader("CarAds.csv");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -41,27 +40,33 @@ public class FrequentWordFinderSingleThreaded {
         Path path = Paths.get("");
         try (Scanner scanner = new Scanner(new FileReader(String.format(path.toAbsolutePath() + "/src/main/resources/PartB/" + filename, filename)))) {
             while (scanner.hasNext()) {
-                String word = scanner.next();
-                if (word.length() < 5 || !word.matches("[a-zA-Z]+"))
-                    continue;
+                String[] tokens = scanner.next().split("[^a-z]");
+                for (String token : tokens) {
+                    String word = token.trim().toLowerCase().replaceAll("[^a-z]", "");
 
-                Integer counter = words.get(word);
+                    if (word.length() < 5)
+                        continue;
 
-                if (counter != null)
-                    counter++;
-                else
-                    counter = 1;
+                    Integer counter = words.get(word);
 
-                words.put(word, counter);
+                    if (counter != null)
+                        counter++;
+                    else
+                        counter = 1;
+
+                    words.put(word, counter);
+                }
             }
-            getMaxOccurrence(filename, words);
         } catch (FileNotFoundException e) {
             System.out.println("Error: file not found.");
         }
+        getMaxOccurrence(filename, words);
     }
 
     private static void getMaxOccurrence(String filename, Map<String, Integer> words) {
         int max = 1;
+        int sum = 0;
+        String maxOccurredWord = "";
 
         for (Map.Entry<String, Integer> word : words.entrySet())
             if (word.getValue() > max)
@@ -69,6 +74,23 @@ public class FrequentWordFinderSingleThreaded {
 
         for (Map.Entry<String, Integer> word : words.entrySet())
             if (word.getValue() == max)
-                System.out.println(filename + ": " + word.getKey());
+                maxOccurredWord = word.getKey();
+
+        for (Map.Entry<String, Integer> map : words.entrySet())
+            if (map.getKey().contains(maxOccurredWord) && maxOccurredWord.length() >= 4)
+                sum += map.getValue();
+
+        for (Map.Entry<String, Integer> word : words.entrySet()) {
+            if (word.getKey().equals("diesel"))
+                System.out.println(word.getKey() + "=" + word.getValue());
+            if (word.getKey().equals("gasoline"))
+                System.out.println(word.getKey() + "=" + word.getValue());
+            if (word.getKey().equals("other"))
+                System.out.println(word.getKey() + "=" + word.getValue());
+            if (word.getValue() == max) {
+                words.put(word.getKey(), sum);
+                System.out.println(filename + ": " + "'" + word.getKey() + "'" + " was found " + word.getValue() + " times.");
+            }
+        }
     }
 }

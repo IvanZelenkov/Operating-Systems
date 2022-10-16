@@ -12,7 +12,6 @@ public class FrequentWordFinderMultiThreaded implements Runnable {
 
     public static void main(String[] args) {
         Runnable runnable = new FrequentWordFinderMultiThreaded();
-
         Thread thread0 = new Thread(runnable);
         Thread thread1 = new Thread(runnable);
         Thread thread2 = new Thread(runnable);
@@ -32,23 +31,20 @@ public class FrequentWordFinderMultiThreaded implements Runnable {
 
     private static void fileReader(String filename, Map<String, Integer> words) {
         Path path = Paths.get("");
-        int c = 0;
         try (Scanner scanner = new Scanner(new FileReader(String.format(path.toAbsolutePath() + "/src/main/resources/PartA/" + filename, filename)))) {
             while (scanner.hasNext()) {
                 String word = scanner.next().toLowerCase().replaceAll("[^a-z]", "");
                 if (!word.matches("[a-z]{5,}"))
                     continue;
 
-                synchronized (FrequentWordFinderMultiThreaded.class) {
-                    Integer counter = words.get(word);
+                Integer counter = words.get(word);
 
-                    if (counter != null)
-                        counter++;
-                    else
-                        counter = 1;
+                if (counter != null)
+                    counter++;
+                else
+                    counter = 1;
 
-                    words.put(word, counter);
-                }
+                words.put(word, counter);
             }
         } catch (FileNotFoundException e) {
             System.out.println("Error: file not found.");
@@ -58,18 +54,30 @@ public class FrequentWordFinderMultiThreaded implements Runnable {
 
     private static void getMaxOccurrence(String filename, Map<String, Integer> words) {
         int max = 1;
+        int sum = 0;
+        String maxOccurredWord = "";
 
         for (Map.Entry<String, Integer> word : words.entrySet())
             if (word.getValue() > max)
                 max = word.getValue();
 
-
         for (Map.Entry<String, Integer> word : words.entrySet())
+            if (word.getValue() == max)
+                maxOccurredWord = word.getKey();
+
+        for (Map.Entry<String, Integer> map : words.entrySet())
+            if (map.getKey().contains(maxOccurredWord) && maxOccurredWord.length() >= 4)
+                sum += map.getValue();
+
+        for (Map.Entry<String, Integer> word : words.entrySet()) {
             if (word.getValue() == max) {
+                words.put(word.getKey(), sum);
                 synchronized (FrequentWordFinderMultiThreaded.class) {
-                    System.out.println(filename + ": " + word.getKey() + word.getValue());
+                    Thread.currentThread().interrupt();
+                    System.out.println(filename + ": " + "'" + word.getKey() + "'" + " was found " + word.getValue() + " times.");
                     Runtime.getRuntime().halt(0);
                 }
             }
+        }
     }
 }
