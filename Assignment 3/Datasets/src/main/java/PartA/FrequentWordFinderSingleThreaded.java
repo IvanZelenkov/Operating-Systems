@@ -4,53 +4,37 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class FrequentWordFinderSingleThreaded {
 
+    private static final Map<String, Integer> words = new HashMap<>();
+
     public static void main(String[] args) {
-        Map<String, Integer> words = new HashMap<>();
-        String filename = "SMS_Spam.txt";
-        fileReader(filename, words);
+        fileReader("SMS_Spam.txt");
     }
 
-    private static void fileReader(String filename, Map<String, Integer> words) {
+    private static void fileReader(String filename) {
         Path path = Paths.get("");
-        try (Scanner scanner = new Scanner(new FileReader(String.format(path.toAbsolutePath() + "/src/main/resources/PartA/" + filename, filename)))) {
+        try (Scanner scanner = new Scanner(new FileReader(String.format(path.toAbsolutePath() + "/src/main/resources/PartB/" + filename, filename)))) {
             while (scanner.hasNext()) {
-                String word = scanner.next().toLowerCase().replaceAll("[^a-z]", "");
-                if (!word.matches("[a-z]{5,}"))
-                    continue;
+                String[] tokens = scanner.next().split("[^a-z]");
+                for (String token : tokens) {
+                    String word = token.trim().toLowerCase().replaceAll("[^a-z]", "");
 
-                Integer counter = words.get(word);
+                    if (word.length() < 5)
+                        continue;
 
-                if (counter != null)
-                    counter++;
-                else
-                    counter = 1;
+                    Integer counter = words.get(word);
 
-                words.put(word, counter);
+                    if (counter != null)
+                        counter++;
+                    else
+                        counter = 1;
+
+                    words.put(word, counter);
+                }
             }
-//            while (scanner.hasNext()) {
-//                String[] tokens = scanner.next().split("[^a-z]");
-//                for (String token : tokens) {
-//                    String word = token.trim().toLowerCase().replaceAll("[^a-z]", "");
-//
-//                    if (word.length() < 5)
-//                        continue;
-//
-//                    Integer counter = words.get(word);
-//
-//                    if (counter != null)
-//                        counter++;
-//                    else
-//                        counter = 1;
-//
-//                    words.put(word, counter);
-//                }
-//            }
         } catch (FileNotFoundException e) {
             System.out.println("Error: file not found.");
         }

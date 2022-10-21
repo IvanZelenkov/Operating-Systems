@@ -2,43 +2,65 @@ package PartB;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class FrequentWordFinderMultiThreaded implements Runnable {
 
+    private static final Map<String, Integer> words = Collections.synchronizedMap(new HashMap<>());
+
     public static void main(String[] args) {
-        Runnable runnable = new PartA.FrequentWordFinderMultiThreaded();
+        Runnable runnable = new PartB.FrequentWordFinderMultiThreaded();
 
         Thread thread0 = new Thread(runnable);
         Thread thread1 = new Thread(runnable);
         Thread thread2 = new Thread(runnable);
         Thread thread3 = new Thread(runnable);
         thread0.start();
-        thread1.start();
-        thread2.start();
-        thread3.start();
+//        thread1.start();
+//        thread2.start();
+//        thread3.start();
     }
 
     @Override
     public void run() {
-        String filename = "SMS_Spam.txt";
-        Map<String, Integer> words = new HashMap<>();
-        fileReader(filename, words);
+        fileFinder();
     }
 
-    private static void fileReader(String filename, Map<String, Integer> words) {
+    private static void fileFinder() {
         Path path = Paths.get("");
-        try (Scanner scanner = new Scanner(new FileReader(String.format(path.toAbsolutePath() + "/src/main/resources/PartA/" + filename, filename)))) {
-            while (scanner.hasNext()) {
-                String word = scanner.next();
+        try {
+            Stream<Path> files = Files.list(Paths.get(path.toAbsolutePath() + "/src/main/resources/PartB/"));
 
-                synchronized (PartA.FrequentWordFinderMultiThreaded.class) {
+            Set<String> set = files
+                    .filter(file -> !Files.isDirectory(file))
+                    .map(Path::getFileName)
+                    .map(Path::toString)
+                    .collect(Collectors.toSet());
+
+//            for (String filename : set)
+            fileReader("CarAds.csv");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void fileReader(String filename) {
+        Path path = Paths.get("");
+        try (Scanner scanner = new Scanner(new FileReader(String.format(path.toAbsolutePath() + "/src/main/resources/PartB/" + filename, filename)))) {
+            while (scanner.hasNext()) {
+                String[] tokens = scanner.next().split("[^a-z]");
+                for (String token : tokens) {
+                    String word = token.trim().toLowerCase().replaceAll("[^a-z]", "");
+
+                    if (word.length() < 5)
+                        continue;
+
                     Integer counter = words.get(word);
 
                     if (counter != null)

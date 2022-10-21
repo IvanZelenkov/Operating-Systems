@@ -2,49 +2,70 @@ package PartA;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class FrequentWordFinderMultiThreaded implements Runnable {
 
+//    private static final Map<String, Integer> words = new HashMap<>();
+
     public static void main(String[] args) {
-        Runnable runnable = new FrequentWordFinderMultiThreaded();
-        Thread thread0 = new Thread(runnable);
-        Thread thread1 = new Thread(runnable);
-        Thread thread2 = new Thread(runnable);
-        Thread thread3 = new Thread(runnable);
-        thread0.start();
-        thread1.start();
-        thread2.start();
-        thread3.start();
+        Runnable runnable = new PartA.FrequentWordFinderMultiThreaded();
+        Thread thread = new Thread(runnable);
+        thread.start();
     }
 
     @Override
     public void run() {
-        String filename = "SMS_Spam.txt";
-        Map<String, Integer> words = new HashMap<>();
-        fileReader(filename, words);
+        fileFinder();
+    }
+
+    private static void fileFinder() {
+        Path path = Paths.get("");
+        Map<String, Integer> words;
+        try {
+            Stream<Path> files = Files.list(Paths.get(path.toAbsolutePath() + "/src/main/resources/PartB/"));
+
+            Set<String> set = files
+                    .filter(file -> !Files.isDirectory(file))
+                    .map(Path::getFileName)
+                    .map(Path::toString)
+                    .collect(Collectors.toSet());
+
+            for (String filename : set) {
+                words = new HashMap<>();
+                fileReader(filename, words);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void fileReader(String filename, Map<String, Integer> words) {
         Path path = Paths.get("");
-        try (Scanner scanner = new Scanner(new FileReader(String.format(path.toAbsolutePath() + "/src/main/resources/PartA/" + filename, filename)))) {
+        try (Scanner scanner = new Scanner(new FileReader(String.format(path.toAbsolutePath() + "/src/main/resources/PartB/" + filename, filename)))) {
             while (scanner.hasNext()) {
-                String word = scanner.next().toLowerCase().replaceAll("[^a-z]", "");
-                if (!word.matches("[a-z]{5,}"))
-                    continue;
+                String[] tokens = scanner.next().split("[^a-z]");
+                for (String token : tokens) {
+                    String word = token.trim().toLowerCase().replaceAll("[^a-z]", "");
 
-                Integer counter = words.get(word);
+                    if (word.length() < 5)
+                        continue;
 
-                if (counter != null)
-                    counter++;
-                else
-                    counter = 1;
+                    Integer counter = words.get(word);
 
-                words.put(word, counter);
+                    if (counter != null)
+                        counter++;
+                    else
+                        counter = 1;
+
+                    words.put(word, counter);
+                }
             }
         } catch (FileNotFoundException e) {
             System.out.println("Error: file not found.");
@@ -72,11 +93,7 @@ public class FrequentWordFinderMultiThreaded implements Runnable {
         for (Map.Entry<String, Integer> word : words.entrySet()) {
             if (word.getValue() == max) {
                 words.put(word.getKey(), sum);
-                synchronized (FrequentWordFinderMultiThreaded.class) {
-                    Thread.currentThread().interrupt();
-                    System.out.println(filename + ": " + "'" + word.getKey() + "'" + " was found " + word.getValue() + " times.");
-                    Runtime.getRuntime().halt(0);
-                }
+                System.out.println(filename + ": " + "'" + word.getKey() + "'" + " was found " + word.getValue() + " times.");
             }
         }
     }
