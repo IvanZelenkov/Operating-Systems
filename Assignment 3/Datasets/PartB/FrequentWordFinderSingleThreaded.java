@@ -1,5 +1,6 @@
 package PartB;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -11,14 +12,16 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class FrequentWordFinderSingleThreaded {
-
-    private static final Map<String, Integer> words = new HashMap<>();
-
     public static void main(String[] args) {
+        double startTime = System.currentTimeMillis();
         fileFinder();
+        double endTime = System.currentTimeMillis();
+        double executionTotalTime = (endTime - startTime) / 1000;
+        System.out.println("\nExecution time: " + executionTotalTime + " seconds");
     }
 
     private static void fileFinder() {
+        System.out.println("Reading in progress...\n");
         Path path = Paths.get("");
         try {
             Stream<Path> files = Files.list(Paths.get(path.toAbsolutePath() + "/src/main/resources/PartB/"));
@@ -29,18 +32,20 @@ public class FrequentWordFinderSingleThreaded {
                     .map(Path::toString)
                     .collect(Collectors.toSet());
 
-            for (String filename : set)
-                fileReader(filename);
+            for (String filename : set) {
+                fileReader(filename, new HashMap<>());
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private static void fileReader(String filename) {
+    private static void fileReader(String filename, Map<String, Integer> words) {
         Path path = Paths.get("");
-        try (Scanner scanner = new Scanner(new FileReader(String.format(path.toAbsolutePath() + "/src/main/resources/PartB/" + filename, filename)))) {
-            while (scanner.hasNext()) {
-                String[] tokens = scanner.next().split("[^a-z]");
+        String line = "";
+        try (BufferedReader reader = new BufferedReader(new FileReader(String.format(path.toAbsolutePath() + "/src/main/resources/PartB/" + filename, filename)))) {
+            while ((line = reader.readLine()) != null) {
+                String[] tokens = line.split("[^a-zA-Z]");
                 for (String token : tokens) {
                     String word = token.trim().toLowerCase().replaceAll("[^a-z]", "");
 
@@ -59,6 +64,8 @@ public class FrequentWordFinderSingleThreaded {
             }
         } catch (FileNotFoundException e) {
             System.out.println("Error: file not found.");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         getMaxOccurrence(filename, words);
     }
@@ -81,12 +88,6 @@ public class FrequentWordFinderSingleThreaded {
                 sum += map.getValue();
 
         for (Map.Entry<String, Integer> word : words.entrySet()) {
-//            if (word.getKey().equals("diesel"))
-//                System.out.println(word.getKey() + "=" + word.getValue());
-//            if (word.getKey().equals("gasoline"))
-//                System.out.println(word.getKey() + "=" + word.getValue());
-//            if (word.getKey().equals("other"))
-//                System.out.println(word.getKey() + "=" + word.getValue());
             if (word.getValue() == max) {
                 words.put(word.getKey(), sum);
                 System.out.println(filename + ": " + "'" + word.getKey() + "'" + " was found " + word.getValue() + " times.");

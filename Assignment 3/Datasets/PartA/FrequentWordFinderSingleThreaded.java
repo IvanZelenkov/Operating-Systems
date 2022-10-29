@@ -18,7 +18,7 @@ public class FrequentWordFinderSingleThreaded {
         Path path = Paths.get("");
         try (Scanner scanner = new Scanner(new FileReader(String.format(path.toAbsolutePath() + "/src/main/resources/PartA/" + filename, filename)))) {
             while (scanner.hasNext()) {
-                String[] tokens = scanner.next().split("[^a-z]");
+                String[] tokens = scanner.next().split("[^a-zA-Z]");
                 for (String token : tokens) {
                     String word = token.trim().toLowerCase().replaceAll("[^a-z]", "");
 
