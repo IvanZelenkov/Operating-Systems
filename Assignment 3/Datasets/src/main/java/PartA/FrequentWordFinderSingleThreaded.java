@@ -1,24 +1,24 @@
 package PartA;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
 public class FrequentWordFinderSingleThreaded {
-
-    private static final Map<String, Integer> words = new HashMap<>();
-
     public static void main(String[] args) {
-        fileReader("SMS_Spam.txt");
+        fileReader("SMS_Spam.txt", new HashMap<>());
     }
 
-    private static void fileReader(String filename) {
+    private static void fileReader(String filename, Map<String, Integer> words) {
         Path path = Paths.get("");
-        try (Scanner scanner = new Scanner(new FileReader(String.format(path.toAbsolutePath() + "/src/main/resources/PartB/" + filename, filename)))) {
-            while (scanner.hasNext()) {
-                String[] tokens = scanner.next().split("[^a-z]");
+        String line = "";
+        try (BufferedReader reader = new BufferedReader(new FileReader(String.format(path.toAbsolutePath() + "/src/main/resources/PartB/" + filename, filename)))) {
+            while ((line = reader.readLine()) != null) {
+                String[] tokens = line.split("[^a-zA-Z]");
                 for (String token : tokens) {
                     String word = token.trim().toLowerCase().replaceAll("[^a-z]", "");
 
@@ -37,6 +37,8 @@ public class FrequentWordFinderSingleThreaded {
             }
         } catch (FileNotFoundException e) {
             System.out.println("Error: file not found.");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         getMaxOccurrence(filename, words);
     }

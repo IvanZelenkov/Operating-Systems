@@ -1,18 +1,14 @@
 package PartA;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class FrequentWordFinderMultiThreaded implements Runnable {
-
-//    private static final Map<String, Integer> words = new HashMap<>();
 
     public static void main(String[] args) {
         Runnable runnable = new PartA.FrequentWordFinderMultiThreaded();
@@ -22,35 +18,16 @@ public class FrequentWordFinderMultiThreaded implements Runnable {
 
     @Override
     public void run() {
-        fileFinder();
-    }
-
-    private static void fileFinder() {
-        Path path = Paths.get("");
-        Map<String, Integer> words;
-        try {
-            Stream<Path> files = Files.list(Paths.get(path.toAbsolutePath() + "/src/main/resources/PartB/"));
-
-            Set<String> set = files
-                    .filter(file -> !Files.isDirectory(file))
-                    .map(Path::getFileName)
-                    .map(Path::toString)
-                    .collect(Collectors.toSet());
-
-            for (String filename : set) {
-                words = new HashMap<>();
-                fileReader(filename, words);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Map<String, Integer> words = new HashMap<>();
+        fileReader("SMS_Spam.txt", words);
     }
 
     private static void fileReader(String filename, Map<String, Integer> words) {
         Path path = Paths.get("");
-        try (Scanner scanner = new Scanner(new FileReader(String.format(path.toAbsolutePath() + "/src/main/resources/PartB/" + filename, filename)))) {
-            while (scanner.hasNext()) {
-                String[] tokens = scanner.next().split("[^a-z]");
+        String line = "";
+        try (BufferedReader reader = new BufferedReader(new FileReader(String.format(path.toAbsolutePath() + "/src/main/resources/PartA/" + filename, filename)))) {
+            while ((line = reader.readLine()) != null) {
+                String[] tokens = line.split("[^a-zA-Z]");
                 for (String token : tokens) {
                     String word = token.trim().toLowerCase().replaceAll("[^a-z]", "");
 
@@ -69,6 +46,8 @@ public class FrequentWordFinderMultiThreaded implements Runnable {
             }
         } catch (FileNotFoundException e) {
             System.out.println("Error: file not found.");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         getMaxOccurrence(filename, words);
     }
