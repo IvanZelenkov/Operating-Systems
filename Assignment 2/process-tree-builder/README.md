@@ -74,7 +74,7 @@ For PartD:
 3. The parent should return a confirmation message that the child completed a chore.
 
 ### Support
-*idzelenk@uno.edu*
+*itproger.ivan@gmail.com*
 
 ### Author
 *Ivan Zelenkov*
