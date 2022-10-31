@@ -13,11 +13,21 @@ import java.util.Map;
 
 /**
  * @author Ivan Zelenkov
+ * SingleThreadedCollector class read file in PartA folder,
+ * count occurred words, and return an output that will contain the filename,
+ * the most occurred word in that file, and the number of times that word was repeated.
  */
 public class SingleThreadedCollector {
 
     public static void main(String[] args) {
+        double startTime = System.currentTimeMillis();
+        System.out.println("Reading in progress...\n");
+
         fileReader("SMS_Spam.txt", new HashMap<>());
+
+        double endTime = System.currentTimeMillis();
+        double executionTotalTime = (endTime - startTime) / 1000;
+        System.out.println("\nExecution time: " + executionTotalTime + " seconds");
     }
 
     /**

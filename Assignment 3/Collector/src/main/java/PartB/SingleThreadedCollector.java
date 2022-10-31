@@ -16,6 +16,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * @author Ivan Zelenkov
+ * SingleThreadedCollector class read files in PartB folder,
+ * count occurred words, and return an output that will contain the filename,
+ * the most occurred word in that file, and the number of times that word was repeated.
+ */
 public class SingleThreadedCollector {
 
     public static void main(String[] args) {

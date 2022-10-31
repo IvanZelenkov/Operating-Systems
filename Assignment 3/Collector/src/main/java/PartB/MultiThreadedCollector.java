@@ -16,9 +16,9 @@ import java.util.concurrent.Future;
 
 /**
  * @author Ivan Zelenkov
- * Collector class read files in a folder with executor service, count occurred words,
- * and return an output that will contain the filename, the most occurred
- * word in that file, and the number of times that word was repeated.
+ * MultiThreadedCollector class read files in PartB folder with executor service,
+ * count occurred words, and return an output that will contain the filename,
+ * the most occurred word in that file, and the number of times that word was repeated.
  */
 public class MultiThreadedCollector {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
