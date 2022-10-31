@@ -12,22 +12,22 @@
                 - NaryTree.java
                 - Node.java
                 - ProcessTreeBuilder.java
-        - resources
-            - PartA
-                - fork3calls.json
-                - fork6calls.json
-                - fork10calls.json
-                - main.c
-                - main.exe
-            - PartC
-                - fork3calls.json
-                - fork6calls.json
-                - fork10calls.json
-                - main.c
-                - main.exe
-            - PartD
-                - main.c
-                - main.exe
+            - resources
+                - PartA
+                    - fork3calls.json
+                    - fork6calls.json
+                    - fork10calls.json
+                    - main.c
+                    - main.exe
+                - PartC
+                    - fork3calls.json
+                    - fork6calls.json
+                    - fork10calls.json
+                    - main.c
+                    - main.exe
+                - PartD
+                    - main.c
+                    - main.exe
 
 ### Description
 For this assignment, I will write an implementation of the N-are tree where parents can have multiple children
