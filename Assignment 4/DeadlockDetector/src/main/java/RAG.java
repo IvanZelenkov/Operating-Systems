@@ -28,12 +28,26 @@ public class RAG {
         return null;
     }
 
-    public void addEdge(Vertex<String> vertex1, Vertex<String> vertex2) {
-        vertex1.addNeighbor(vertex2);
+    public void addEdge(Vertex<String> process, Vertex<String> resource) {
+        if (!process.isConnected()) {
+            resource.addNeighbor(process);
+            resource.setConnected(true);
+        }
+        else {
+            process.addNeighbor(resource);
+            process.setConnected(true);
+        }
     }
 
-    public void removeEdge(Vertex<String> vertex1, Vertex<String> vertex2) {
-        vertex1.removeNeighbor(vertex2);
+    public void removeEdge(Vertex<String> process, Vertex<String> resource) {
+        if (!process.isConnected()) {
+            resource.removeNeighbor(process);
+            resource.setConnected(false);
+        }
+        else {
+            process.removeNeighbor(resource);
+            process.setConnected(false);
+        }
     }
 
     public boolean hasCycle(Vertex<String> sourceVertex) {

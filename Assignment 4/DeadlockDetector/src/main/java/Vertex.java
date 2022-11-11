@@ -4,9 +4,12 @@ import java.util.List;
 public class Vertex<T> {
     private T id;
     private T type;
-    private final List<Vertex<String>> adjacencyList;
-    private final List<Vertex<String>> waitingList;
+    private final List<Vertex<T>> adjacencyList;
+    private List<Vertex<T>> processesWaitingForResource;
+    private List<Vertex<T>> resourcesWaitingForProcess;
 
+    private boolean isConnected;
+    private boolean isWaiting;
     private boolean isBeingVisited;
     private boolean isVisited;
 
@@ -14,14 +17,17 @@ public class Vertex<T> {
         this.id = id;
         this.type = type;
         this.adjacencyList = new ArrayList<>();
-        this.waitingList = new ArrayList<>();
+        if (type.equals("process"))
+            this.resourcesWaitingForProcess = new ArrayList<>();
+        else if (type.equals("resource"))
+            this.processesWaitingForResource = new ArrayList<>();
     }
 
-    public void addNeighbor(Vertex<String> adjacent) {
+    public void addNeighbor(Vertex<T> adjacent) {
         adjacencyList.add(adjacent);
     }
 
-    public void removeNeighbor(Vertex<String> adjacent) {
+    public void removeNeighbor(Vertex<T> adjacent) {
         adjacencyList.remove(adjacent);
     }
 
@@ -41,8 +47,44 @@ public class Vertex<T> {
         this.type = type;
     }
 
-    public List<Vertex<String>> getAdjacencyList() {
+    public List<Vertex<T>> getAdjacencyList() {
         return adjacencyList;
+    }
+
+    public List<Vertex<T>> getProcessesWaitingForResource() {
+        return processesWaitingForResource;
+    }
+
+    public void setProcessesWaitingForResource(List<Vertex<T>> processesWaitingForResource) {
+        this.processesWaitingForResource = processesWaitingForResource;
+    }
+
+    public List<Vertex<T>> getResourcesWaitingForProcess() {
+        return resourcesWaitingForProcess;
+    }
+
+    public void setResourcesWaitingForProcess(List<Vertex<T>> resourcesWaitingForProcess) {
+        this.resourcesWaitingForProcess = resourcesWaitingForProcess;
+    }
+
+    public void addWaitingProcess(Vertex<T> vertex) {
+        processesWaitingForResource.add(vertex);
+    }
+
+    public boolean isConnected() {
+        return isConnected;
+    }
+
+    public void setConnected(boolean connected) {
+        isConnected = connected;
+    }
+
+    public boolean isWaiting() {
+        return isWaiting;
+    }
+
+    public void setWaiting(boolean waiting) {
+        isWaiting = waiting;
     }
 
     public boolean isBeingVisited() {
