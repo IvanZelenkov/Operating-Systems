@@ -4,6 +4,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
 
 public class Deadlock {
@@ -11,19 +12,20 @@ public class Deadlock {
     private static final RAG rag = new RAG();
 
     public static void main(String[] args) {
-        String filename = "input1.txt";
+        String filename = "input2.txt";
         fileReader(filename);
+        System.out.println("EXECUTION COMPLETED: No deadlock encountered.");
 
-        List<Vertex<String>> vertices = rag.getVertices();
-        for (Vertex<String> vertex : vertices) {
-            System.out.println(vertex.getId() + " : " + vertex.getType());
-            List<Vertex<String>> adjacencyList = vertex.getAdjacencyList();
-            for (Vertex<String> v : adjacencyList) {
-                System.out.println("    |");
-                System.out.println("     -- " + v.getId() + " : " + v.getType());
-            }
-            System.out.println();
-        }
+//        List<Vertex<String>> vertices = rag.getVertices();
+//        for (Vertex<String> vertex : vertices) {
+//            System.out.println(vertex.getId() + " : " + vertex.getType());
+//            List<Vertex<String>> adjacencyList = vertex.getAdjacencyList();
+//            for (Vertex<String> v : adjacencyList) {
+//                System.out.println("    |");
+//                System.out.println("     -- " + v.getId() + " : " + v.getType());
+//            }
+//            System.out.println();
+//        }
     }
 
     private static void fileReader(String filename) {
@@ -125,6 +127,35 @@ public class Deadlock {
                 System.out.println("Adjacency List of Process " + process.getId() + ": " + process.getAdjacencyList());
                 System.out.println("Adjacency List of Resource " + resource.getId() + ": " + resource.getAdjacencyList());
                 System.out.println("Processes Waiting For Resource " + resource.getId() + ": "+ resource.getProcessesWaitingForResource() + "\n");
+            }
+        }
+        for (int i = 0; i < rag.getVertices().size(); i++) {
+            if (rag.hasCycle(rag.getVertices().get(i))) {
+                Collections.sort(rag.getDeadlockPath().get("process"));
+                Collections.sort(rag.getDeadlockPath().get("resource"));
+
+                StringBuilder sb = new StringBuilder();
+                sb.append("DEADLOCK DETECTED: Processes ");
+
+                for (int j = 0; j < rag.getDeadlockProcesses().size(); j++) {
+                    if (j == rag.getDeadlockProcesses().size() - 1)
+                        sb.append(rag.getDeadlockProcesses().get(j));
+                    else
+                        sb.append(rag.getDeadlockProcesses().get(j)).append(", ");
+                }
+
+                sb.append(" and ");
+
+                for (int j = 0; j < rag.getDeadlockResources().size(); j++) {
+                    if (j == rag.getDeadlockResources().size() - 1)
+                        sb.append(rag.getDeadlockResources().get(j));
+                    else
+                        sb.append(rag.getDeadlockResources().get(j)).append(", ");
+                }
+
+                System.out.println(sb);
+
+                Runtime.getRuntime().halt(0);
             }
         }
     }

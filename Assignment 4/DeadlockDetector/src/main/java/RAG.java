@@ -2,13 +2,31 @@ import java.util.*;
 
 public class RAG {
     private final List<Vertex<String>> vertices;
+    private final Map<String, List<String>> deadlockPath;
+    private final List<String> deadlockProcesses;
+    private final List<String> deadlockResources;
 
     public RAG() {
         this.vertices = new ArrayList<>();
+        this.deadlockPath = new HashMap<>();
+        this.deadlockProcesses = new ArrayList<>();
+        this.deadlockResources = new ArrayList<>();
     }
 
     public List<Vertex<String>> getVertices() {
         return vertices;
+    }
+
+    public Map<String, List<String>> getDeadlockPath() {
+        return deadlockPath;
+    }
+
+    public List<String> getDeadlockProcesses() {
+        return deadlockProcesses;
+    }
+
+    public List<String> getDeadlockResources() {
+        return deadlockResources;
     }
 
     public void addVertex(Vertex<String> vertex) {
@@ -55,15 +73,25 @@ public class RAG {
 
         for (Vertex<String> neighbor : sourceVertex.getAdjacencyList()) {
             if (neighbor.isBeingVisited()) {
-                // backward edge exists
-                return true;
+                return getDeadlockInfo(sourceVertex);
             } else if (!neighbor.isVisited() && hasCycle(neighbor)) {
-                return true;
+                return getDeadlockInfo(sourceVertex);
             }
         }
 
         sourceVertex.setBeingVisited(false);
-        sourceVertex.setVisited(true);
+        sourceVertex.setVisited(false);
         return false;
+    }
+
+    private boolean getDeadlockInfo(Vertex<String> sourceVertex) {
+        if (sourceVertex.getType().equals("process")) {
+            deadlockProcesses.add(sourceVertex.getId());
+            deadlockPath.put("process", deadlockProcesses);
+        } else if (sourceVertex.getType().equals("resource")) {
+            deadlockResources.add(sourceVertex.getId());
+            deadlockPath.put("resource", deadlockResources);
+        }
+        return true;
     }
 }
