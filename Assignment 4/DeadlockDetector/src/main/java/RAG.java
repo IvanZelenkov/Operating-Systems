@@ -29,18 +29,18 @@ public class RAG {
     }
 
     public void addEdge(Vertex<String> process, Vertex<String> resource) {
-        if (!process.isConnected()) {
-            resource.addNeighbor(process);
-            resource.setConnected(true);
-        }
-        else {
+        if (!resource.getAdjacencyList().isEmpty()) {
             process.addNeighbor(resource);
             process.setConnected(true);
+        }
+        else {
+            resource.addNeighbor(process);
+            resource.setConnected(true);
         }
     }
 
     public void removeEdge(Vertex<String> process, Vertex<String> resource) {
-        if (!process.isConnected()) {
+        if (!resource.getAdjacencyList().isEmpty()) {
             resource.removeNeighbor(process);
             resource.setConnected(false);
         }

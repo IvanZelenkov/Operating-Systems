@@ -6,7 +6,6 @@ public class Vertex<T> {
     private T type;
     private final List<Vertex<T>> adjacencyList;
     private List<Vertex<T>> processesWaitingForResource;
-    private List<Vertex<T>> resourcesWaitingForProcess;
 
     private boolean isConnected;
     private boolean isWaiting;
@@ -17,9 +16,7 @@ public class Vertex<T> {
         this.id = id;
         this.type = type;
         this.adjacencyList = new ArrayList<>();
-        if (type.equals("process"))
-            this.resourcesWaitingForProcess = new ArrayList<>();
-        else if (type.equals("resource"))
+        if (type.equals("resource"))
             this.processesWaitingForResource = new ArrayList<>();
     }
 
@@ -55,20 +52,13 @@ public class Vertex<T> {
         return processesWaitingForResource;
     }
 
-    public void setProcessesWaitingForResource(List<Vertex<T>> processesWaitingForResource) {
-        this.processesWaitingForResource = processesWaitingForResource;
-    }
-
-    public List<Vertex<T>> getResourcesWaitingForProcess() {
-        return resourcesWaitingForProcess;
-    }
-
-    public void setResourcesWaitingForProcess(List<Vertex<T>> resourcesWaitingForProcess) {
-        this.resourcesWaitingForProcess = resourcesWaitingForProcess;
-    }
 
     public void addWaitingProcess(Vertex<T> vertex) {
         processesWaitingForResource.add(vertex);
+    }
+
+    public void removeWaitingProcess(Vertex<T> vertex) {
+        processesWaitingForResource.remove(vertex);
     }
 
     public boolean isConnected() {

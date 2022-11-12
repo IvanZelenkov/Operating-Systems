@@ -11,7 +11,7 @@ public class Deadlock {
     private static final RAG rag = new RAG();
 
     public static void main(String[] args) {
-        String filename = "input3.txt";
+        String filename = "input1.txt";
         fileReader(filename);
 
         List<Vertex<String>> vertices = rag.getVertices();
@@ -62,59 +62,69 @@ public class Deadlock {
         }
 
         if (tokens[1].equalsIgnoreCase("w")) {
+            // if the process is already waiting on other resources
             if (process.isWaiting()) {
                 System.out.println(process.getType() + " " + process.getId() + " is already waiting. Do nothing.");
             }
+            // if the resource vertex is already connected to another vertex (i.e., another process), the process must wait
             else if (resource.isConnected()) {
+                rag.addEdge(process, resource);
                 resource.addWaitingProcess(process);
                 process.setWaiting(true);
-                rag.addEdge(process, resource);
                 System.out.println(
                         process.getType() + " " + process.getId() + " wants " +
                         resource.getType() + " " + resource.getId() + " - " +
                         process.getType() + " " + process.getId() + " must wait."
                 );
+                System.out.println("Adjacency List of Process " + process.getId() + ": " + process.getAdjacencyList());
+                System.out.println("Adjacency List of Resource " + resource.getId() + ": " + resource.getAdjacencyList());
+                System.out.println("Processes Waiting For Resource " + resource.getId() + ": "+ resource.getProcessesWaitingForResource() + "\n");
             }
+            // if the resource is not connected to anything (i.e., it is free), then add an edge from the resource to process
             else {
+                rag.addEdge(process, resource);
                 System.out.println(
                         process.getType() + " " + process.getId() + " wants " +
-                        resource.getType() + " " + resource.getId() + " - " +
-                        resource.getType() + " " + resource.getId() + " is allocated to " +
-                        process.getType() + " " + process.getId()
-                );
-                rag.addEdge(process, resource);
-            }
-        }
-        else if (tokens[1].equalsIgnoreCase("r")) {
-            if (!resource.getProcessesWaitingForResource().isEmpty()) {
-                rag.removeEdge(process, resource);
-                for (Vertex<String> vertex : resource.getProcessesWaitingForResource()) {
-                    if (process.getId().equals(vertex.getId()) && process.getType().equals(vertex.getType())) {
-                        if (!vertex.isConnected() && vertex.getResourcesWaitingForProcess().isEmpty()) {
-                            // revert an edge
-                            rag.removeEdge(vertex, resource);
-                            rag.addEdge(resource, vertex);
-                        }
-                    }
-                    System.out.println(
-                            process.getType() + " " + process.getId() + " releases " +
-                            resource.getType() + " " + resource.getId() + " - " +
-                            resource.getType() + " " + resource.getId() + " is allocated to " +
-                            vertex.getType() + " " + vertex.getId()
-                    );
-                    break;
-                }
-            }
-            else {
-                rag.removeEdge(process, resource);
-                process.setConnected(false);
-                resource.setConnected(false);
-                System.out.println(
-                        process.getType() + " 1111" + process.getId() + " releases " +
                                 resource.getType() + " " + resource.getId() + " - " +
                                 resource.getType() + " " + resource.getId() + " is allocated to " +
                                 process.getType() + " " + process.getId()
                 );
+                System.out.println("Adjacency List of Process " + process.getId() + ": " + process.getAdjacencyList());
+                System.out.println("Adjacency List of Resource " + resource.getId() + ": " + resource.getAdjacencyList());
+                System.out.println("Processes Waiting For Resource " + resource.getId() + ": "+ resource.getProcessesWaitingForResource() + "\n");
+            }
+        }
+        else if (tokens[1].equalsIgnoreCase("r")) {
+            if (!resource.getProcessesWaitingForResource().isEmpty()) {
+                for (Vertex<String> waitingProcess : resource.getProcessesWaitingForResource()) {
+                    // revert an edge
+                    rag.removeEdge(process, resource);
+                    rag.removeEdge(waitingProcess, resource);
+                    resource.removeWaitingProcess(waitingProcess);
+                    rag.addEdge(waitingProcess, resource);
+                    System.out.println(
+                            process.getType() + " " + process.getId() + " releases " +
+                            resource.getType() + " " + resource.getId() + " - " +
+                            resource.getType() + " " + resource.getId() + " is allocated to " +
+                            waitingProcess.getType() + " " + waitingProcess.getId()
+                    );
+                    System.out.println("Adjacency List of Process " + process.getId() + ": " + process.getAdjacencyList());
+                    System.out.println("Adjacency List of Resource " + resource.getId() + ": " + resource.getAdjacencyList());
+                    System.out.println("Processes Waiting For Resource " + resource.getId() + ": "+ resource.getProcessesWaitingForResource() + "\n");
+                    break;
+                }
+            }
+            // if the resource's processesWaitingForResource list is empty, then remove an existing edge between the resource and process to make a resource free
+            else {
+                rag.removeEdge(process, resource);
+                System.out.println(
+                        process.getType() + " " + process.getId() + " releases " +
+                        resource.getType() + " " + resource.getId() + " - " +
+                        resource.getType() + " " + resource.getId() + " is now free."
+                );
+                System.out.println("Adjacency List of Process " + process.getId() + ": " + process.getAdjacencyList());
+                System.out.println("Adjacency List of Resource " + resource.getId() + ": " + resource.getAdjacencyList());
+                System.out.println("Processes Waiting For Resource " + resource.getId() + ": "+ resource.getProcessesWaitingForResource() + "\n");
             }
         }
     }
