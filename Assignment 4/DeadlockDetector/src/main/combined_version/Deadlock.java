@@ -268,7 +268,6 @@ public class Deadlock {
 
 /**
  * RAG class (Resource Allocation Graph) represents the properties and methods of a directed graph for constructing such a graph.
- * @author Ivan Zelenkov
  */
 class RAG {
     private final List<Vertex<String>> vertices;
@@ -421,7 +420,6 @@ class RAG {
 
 /**
  * Vertex class represents the properties and methods that must be used in order to create and manage a vertex.
- * @author Ivan Zelenkov
  * @param <T> This describes my type parameter.
  */
 class Vertex<T> {
