@@ -58,7 +58,7 @@ public class DeadlockDetector {
                 writer.write("EXECUTION COMPLETED: No deadlock encountered.");
                 System.out.println("EXECUTION COMPLETED: No deadlock encountered.\n");
             }
-            System.out.println("The output was successfully written to the file.");
+            System.out.printf("The output was successfully written to the file %s.txt.", writeFilename);
         } catch (FileNotFoundException e) {
             System.out.print("Invalid file name, please try again.\n");
         } catch (IOException e) {
@@ -252,9 +252,9 @@ public class DeadlockDetector {
         try {
             File file = new File(String.format(path.toAbsolutePath() + "/src/main/resources/output/%s.txt", filename));
             if (file.createNewFile())
-                System.out.printf("> File %s.txt created\n", filename);
+                System.out.printf("File %s.txt created\n\n", filename);
             else
-                System.out.println("> File already exists\n");
+                System.out.println("File already exists\n");
         } catch (IOException e) {
             e.printStackTrace();
         }
