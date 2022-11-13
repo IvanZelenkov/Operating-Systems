@@ -45,16 +45,19 @@ public class DeadlockDetector {
      */
     public static boolean fileReaderWriter(String readFilename, String writeFilename) {
         boolean isRead = false;
+        boolean isDeadlock = false;
         Path path = Paths.get("");
         String line;
         try (BufferedReader reader = new BufferedReader(new FileReader(String.format(path.toAbsolutePath() + "/src/main/resources/input/%s.txt", readFilename)));
              BufferedWriter writer = new BufferedWriter(new FileWriter(getWriteFile(writeFilename)))) {
-            while ((line = reader.readLine()) != null) {
-                connector(line, writer);
+            while ((line = reader.readLine()) != null && !isDeadlock) {
+                isDeadlock = connector(line, writer);
                 isRead = true;
             }
-            writer.write("EXECUTION COMPLETED: No deadlock encountered.");
-            System.out.println("EXECUTION COMPLETED: No deadlock encountered.\n");
+            if (!isDeadlock) {
+                writer.write("EXECUTION COMPLETED: No deadlock encountered.");
+                System.out.println("EXECUTION COMPLETED: No deadlock encountered.\n");
+            }
             System.out.println("The output was successfully written to the file.");
         } catch (FileNotFoundException e) {
             System.out.print("Invalid file name, please try again.\n");
@@ -68,7 +71,7 @@ public class DeadlockDetector {
      * Creates a connection between process and resource based on the current state of the graph.
      * @param line contains process, action, and resource that will be used in graph.
      */
-    private static void connector(String line, BufferedWriter writer) throws IOException {
+    private static boolean connector(String line, BufferedWriter writer) throws IOException {
         // tokens[0] => process, tokens[1] = W(wants) or R(releases), tokens[2] => resource
         String[] tokens = line.trim().split("\\s+");
 
@@ -198,14 +201,14 @@ public class DeadlockDetector {
         //     System.out.println();
         // }
 
-        checkCycle(writer);
+        return checkCycle(writer);
     }
 
     /**
      * Checks for the presence of a cycle (deadlock) in the graph. If there is, print a message
      * to the user and halt the JVM. Otherwise, output to the user that there is no deadlock in the graph.
      */
-    private static void checkCycle(BufferedWriter writer) throws IOException {
+    private static boolean checkCycle(BufferedWriter writer) throws IOException {
         for (int i = 0; i < rag.getVertices().size(); i++) {
             if (rag.hasCycle(rag.getVertices().get(i))) {
                 Collections.sort(rag.getDeadlockPath().get("process"));
@@ -233,11 +236,11 @@ public class DeadlockDetector {
 
                 writer.write(String.valueOf(sb));
                 System.out.println(sb + "\n");
-                System.out.println("The output was successfully written to the file.");
 
-                Runtime.getRuntime().halt(0);
+                return true;
             }
         }
+        return false;
     }
 
     /**
