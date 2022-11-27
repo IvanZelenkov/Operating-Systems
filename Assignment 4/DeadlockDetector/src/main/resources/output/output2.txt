@@ -3,7 +3,6 @@ process 2 wants resource 3 - resource 3 is allocated to process 2
 process 3 wants resource 2 - resource 2 is allocated to process 3
 process 4 wants resource 1 - process 4 must wait.
 process 1 releases resource 1 - resource 1 is allocated to process 4
-process 4 is already waiting. Process 4 wants resource 2 action is ignored.
+process 4 wants resource 2 - process 4 must wait.
 process 3 wants resource 1 - process 3 must wait.
-process 2 wants resource 1 - process 2 must wait.
-EXECUTION COMPLETED: No deadlock encountered.
+DEADLOCK DETECTED: Processes 3, 4 and 1, 2 are found in cycle.

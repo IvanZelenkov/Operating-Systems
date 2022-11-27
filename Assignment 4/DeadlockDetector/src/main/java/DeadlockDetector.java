@@ -151,6 +151,7 @@ public class DeadlockDetector {
                     rag.removeEdge(process, resource);
                     rag.removeEdge(waitingProcess, resource);
                     resource.removeWaitingProcess(waitingProcess);
+                    waitingProcess.setWaiting(false);
                     rag.addEdge(waitingProcess, resource);
                     writer.write(process.getType() + " " + process.getId() + " releases " +
                             resource.getType() + " " + resource.getId() + " - " +
@@ -223,7 +224,7 @@ public class DeadlockDetector {
                     else
                         sb.append(rag.getDeadlockProcesses().get(j)).append(", ");
 
-                sb.append(" and ");
+                sb.append(" and resources ");
 
                 for (int j = 0; j < rag.getDeadlockResources().size(); j++)
                     if (j == rag.getDeadlockResources().size() - 1)
@@ -252,9 +253,9 @@ public class DeadlockDetector {
         try {
             File file = new File(String.format(path.toAbsolutePath() + "/src/main/resources/output/%s.txt", filename));
             if (file.createNewFile())
-                System.out.printf("File %s.txt created\n\n", filename);
+                System.out.printf("File %s.txt created.\n\n", filename);
             else
-                System.out.println("File already exists\n");
+                System.out.println("File already exists.\nData will be overwritten.\n");
         } catch (IOException e) {
             e.printStackTrace();
         }

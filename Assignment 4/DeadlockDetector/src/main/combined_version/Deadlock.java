@@ -155,6 +155,7 @@ public class Deadlock {
                     rag.removeEdge(process, resource);
                     rag.removeEdge(waitingProcess, resource);
                     resource.removeWaitingProcess(waitingProcess);
+                    waitingProcess.setWaiting(false);
                     rag.addEdge(waitingProcess, resource);
                     writer.write(process.getType() + " " + process.getId() + " releases " +
                             resource.getType() + " " + resource.getId() + " - " +
@@ -227,7 +228,7 @@ public class Deadlock {
                     else
                         sb.append(rag.getDeadlockProcesses().get(j)).append(", ");
 
-                sb.append(" and ");
+                sb.append(" and resources ");
 
                 for (int j = 0; j < rag.getDeadlockResources().size(); j++)
                     if (j == rag.getDeadlockResources().size() - 1)
@@ -256,9 +257,9 @@ public class Deadlock {
         try {
             File file = new File(String.format(path.toAbsolutePath() + "/%s.txt", filename));
             if (file.createNewFile())
-                System.out.printf("File %s.txt created\n\n", filename);
+                System.out.printf("File %s.txt created.\n\n", filename);
             else
-                System.out.println("File already exists\n");
+                System.out.println("File already exists.\nData will be overwritten.\n");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -268,6 +269,7 @@ public class Deadlock {
 
 /**
  * RAG class (Resource Allocation Graph) represents the properties and methods of a directed graph for constructing such a graph.
+ * @author Ivan Zelenkov
  */
 class RAG {
     private final List<Vertex<String>> vertices;
@@ -420,6 +422,7 @@ class RAG {
 
 /**
  * Vertex class represents the properties and methods that must be used in order to create and manage a vertex.
+ * @author Ivan Zelenkov
  * @param <T> This describes my type parameter.
  */
 class Vertex<T> {
