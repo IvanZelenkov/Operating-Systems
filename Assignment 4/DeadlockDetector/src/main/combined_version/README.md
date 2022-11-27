@@ -1,3 +1,3 @@
-`javac Deadlock.java`
+Compile: `javac Deadlock.java`
 
-`java Deadlock`
+Run: `java Deadlock`
