@@ -21,6 +21,15 @@
                     - output1.txt
                     - output2.txt
                     - output3.txt
+            - combined_version
+                - Deadlock.java
+                - README.md
+                - input1.txt
+                - input2.txt
+                - input3.txt
+                - output1.txt
+                - output2.txt
+                - output3.txt
 
 ### Description
 There are a variety of approaches to dealing with resource deadlocks. For this assignment,
