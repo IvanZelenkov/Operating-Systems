@@ -8,4 +8,4 @@ process 1 releases resource 1 - resource 1 is allocated to process 5
 process 3 wants resource 3 - process 3 must wait.
 process 5 releases resource 1 - resource 1 is now free.
 process 4 wants resource 2 - process 4 must wait.
-DEADLOCK DETECTED: Processes 2, 3, 4 and 2, 3, 6 are found in cycle.
+DEADLOCK DETECTED: Processes 2, 3, 4 and resources 2, 3, 6 are found in cycle.
